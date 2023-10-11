@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './AppController';
 import { AppService } from './AppService';
 import {TypeOrmModule} from "@nestjs/typeorm";
+import {AuthModule} from "./auth/AuthModule";
 
 @Module({
   imports: [TypeOrmModule.forRoot(
@@ -13,8 +14,9 @@ import {TypeOrmModule} from "@nestjs/typeorm";
           password: 'learnfastNest',
           database: 'learnfastnest',
           synchronize: true,
+          autoLoadEntities: true,
       }
-  )],
+  ), AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
