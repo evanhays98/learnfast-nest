@@ -13,7 +13,7 @@ import {AuthModule} from "./auth/AuthModule";
           username: 'learnfastnest',
           password: 'learnfastNest',
           database: 'learnfastnest',
-          synchronize: true,
+          entities: ["../src/**/*Entity.ts"],
           autoLoadEntities: true,
       }
   ), AuthModule],

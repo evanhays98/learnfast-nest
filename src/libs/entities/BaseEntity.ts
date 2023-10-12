@@ -1,7 +1,10 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class BaseEntity {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
     @Column({default: true})
     active: boolean;
 
