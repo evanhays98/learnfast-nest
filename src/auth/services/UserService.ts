@@ -12,8 +12,7 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly repo: Repository<UserEntity>,
-  ) {
-  }
+  ) {}
 
   create(createUserDto: CreateUserDto): Promise<UserEntity> {
     if (!isEmail(createUserDto.mail)) {
@@ -30,15 +29,18 @@ export class UsersService {
   }
 
   async findByIdentifier(identifier: string): Promise<UserEntity> {
-    return await this.repo.findOne({
-      where: {
-        mail: identifier,
-      },
-    }) || this.repo.findOne({
-      where: {
-        pseudo: identifier,
-      },
-    });
+    return (
+      (await this.repo.findOne({
+        where: {
+          mail: identifier,
+        },
+      })) ||
+      this.repo.findOne({
+        where: {
+          pseudo: identifier,
+        },
+      })
+    );
   }
 
   async findOne(id: string): Promise<UserEntity> {

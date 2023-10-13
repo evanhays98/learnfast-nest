@@ -1,10 +1,10 @@
 import {
-    BadRequestException,
-    HttpException,
-    HttpStatus,
-    Injectable,
-    Logger,
-    UnauthorizedException,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
@@ -12,6 +12,7 @@ import { instanceToPlain } from 'class-transformer';
 import { AuthUser } from '../../libs/dtos';
 import { CreateUserDto, LoginUserDto } from '../dtos';
 import { UsersService } from './UserService';
+
 import { UserEntity } from '../entities/UserEntity';
 
 @Injectable()
@@ -21,24 +22,32 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private jwtService: JwtService,
-  ) {
-  }
+  ) {}
 
-  async validateLogin(identifier: string, password: string): Promise<UserEntity> {
+  async validateLogin(
+    identifier: string,
+    password: string,
+  ): Promise<UserEntity> {
     const user = await this.usersService.findByIdentifier(identifier);
     this.logger.debug(user.salt);
     if (
       user &&
       user.password ===
-      crypto.createHmac('sha256', user.salt + password).digest('hex')
+        crypto.createHmac('sha256', user.salt + password).digest('hex')
     ) {
       return user;
     }
-    throw new BadRequestException(`Invalid credentials : \n identifier: ${identifier}\n password: ${password}`);
+    throw new BadRequestException(
+      `Invalid credentials : \n identifier: ${identifier}\n password: ${password}`,
+    );
   }
 
   async loginUser(user: UserEntity) {
-    const payload: AuthUser = { id: user.id, pseudo: user.pseudo, mail: user.mail };
+    const payload: AuthUser = {
+      id: user.id,
+      pseudo: user.pseudo,
+      mail: user.mail,
+    };
     const tmpSignedPayload = this.jwtService.sign(payload);
     return {
       access_token: tmpSignedPayload,
@@ -47,18 +56,27 @@ export class AuthService {
   }
 
   async login(loginForm: LoginUserDto) {
-    const user = await this.validateLogin(loginForm.identifier, loginForm.password);
+    const user = await this.validateLogin(
+      loginForm.identifier,
+      loginForm.password,
+    );
     if (!user) {
       throw new UnauthorizedException();
     }
-    const payload: AuthUser = { id: user.id, pseudo: user.pseudo, mail: user.mail };
+    const payload: AuthUser = {
+      id: user.id,
+      pseudo: user.pseudo,
+      mail: user.mail,
+    };
     return {
       access_token: this.jwtService.sign(payload),
       userInfo: instanceToPlain(user),
     };
   }
 
-  signup(signUpForm: CreateUserDto): Promise<{ access_token: string; userInfo: Record<string, any> } | void> {
+  signup(
+    signUpForm: CreateUserDto,
+  ): Promise<{ access_token: string; userInfo: Record<string, any> } | void> {
     return this.usersService
       .create(signUpForm)
       .then((user) => {
