@@ -10,8 +10,7 @@ import {
 import { AuthUser, CreateChapter } from '../../libs/dtos';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../../auth/guards/jwtAuthGuard';
-import { ChapterService } from '../services/ChapterService';
-import { CardService } from '../services';
+import { CardService, ChapterService } from '../services';
 
 @Controller('chapters')
 export class ChapterController {

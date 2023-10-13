@@ -49,4 +49,40 @@ export class CardService {
       },
     });
   }
+
+  async getCardsToWork(meId: string, chapterId: string) {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() - 10);
+    const cardsToRetry = await this.repo
+      .createQueryBuilder('card')
+      .addSelect('RANDOM()', 'seeded_random')
+      .innerJoin(
+        'card.workingCards',
+        'workingCard',
+        'workingCard.ownerId = :meId ' +
+          'AND ARRAY_LENGTH(workingCard.history, 1) IS NOT NULL ' +
+          'AND workingCard.updatedAt < :date ' +
+          'AND workingCard.isValidate = false',
+        { meId, date },
+      )
+      .where('card.chapterId = :chapterId', { chapterId })
+      .orderBy('seeded_random', 'DESC')
+      .take(7)
+      .getMany();
+    const cardsToLearn = await this.repo
+      .createQueryBuilder('card')
+      .addSelect('RANDOM()', 'seeded_random')
+      .leftJoin(
+        'card.workingCards',
+        'workingCard',
+        'workingCard.ownerId = :meId AND workingCard.isValidate = false AND ARRAY_LENGTH(workingCard.history, 1) IS NULL',
+        { meId },
+      )
+      .where('card.chapterId = :chapterId', { chapterId })
+      .orderBy('seeded_random', 'DESC')
+      .distinct(true)
+      .take(20)
+      .getMany();
+    return [...cardsToRetry, ...cardsToLearn].slice(0, 20);
+  }
 }
