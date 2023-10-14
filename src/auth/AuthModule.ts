@@ -10,12 +10,11 @@ import { UserEntity } from './entities/UserEntity';
     TypeOrmModule.forFeature([UserEntity]),
     JwtModule.register({
       global: true,
-      secret: 'secretJwtToken',
+      secret: process.env.JWT_AUTH_SECRET,
       signOptions: { expiresIn: '33333660s' },
     }),
   ],
   controllers: [...Object.values(controllers)],
   providers: [TypeOrmModule, ...Object.values(services)],
 })
-export class AuthModule {
-}
+export class AuthModule {}

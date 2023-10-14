@@ -1,22 +1,19 @@
-import {DataSource} from "typeorm";
-import {UserEntity} from "./auth/entities/UserEntity";
+import { DataSource } from 'typeorm';
 
 export const AppDataSource = new DataSource({
-    type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'learnfastnest',
-    password: 'learnfastNest',
-    database: 'learnfastnest',
-    entities: ["src/**/*Entity.ts"],
-    subscribers: [],
-    migrations: ["src/migrations/*.ts"],
-
-
+  type: 'postgres',
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  entities: ['src/**/*Entity.ts'],
+  subscribers: [],
+  migrations: ['src/migrations/*.ts'],
 });
 
 AppDataSource.initialize()
-    .then(() => {
-        // here you can start to work with your database
-    })
-    .catch((error) => console.log(error));
+  .then(() => {
+    // here you can start to work with your database
+  })
+  .catch((error) => console.log(error));

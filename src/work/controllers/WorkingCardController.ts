@@ -9,23 +9,23 @@ import {
 } from '@nestjs/common';
 import { WorkingCardService } from '../services';
 import { JwtAuthGuard } from '../../auth/guards/jwtAuthGuard';
-import { AnswerWorkingCard, AuthUser, WorkingCards } from '../../libs/dtos';
+import { AnswerWorkingCard, AuthUser } from '../../libs/dtos';
 import { Request } from 'express';
 
 @Controller('working-cards')
 export class WorkingCardController {
   constructor(private readonly workingCardService: WorkingCardService) {}
 
-  @Get('')
+  @Get('chapters/:id')
   @UseGuards(JwtAuthGuard)
-  async getWorkingCards(@Body() info: WorkingCards, @Req() req: Request) {
+  async getWorkingCards(@Param('id') id: string, @Req() req: Request) {
     const user = req.user as AuthUser;
-    return this.workingCardService.getWorkingCard(info.chapterId, user.id);
+    return this.workingCardService.getWorkingCard(id, user.id);
   }
 
-  @Post(':id')
+  @Post('/verification/:id')
   @UseGuards(JwtAuthGuard)
-  async answer(
+  async verification(
     @Body() info: AnswerWorkingCard,
     @Param('id') id: string,
     @Req() req: Request,
@@ -36,5 +36,11 @@ export class WorkingCardController {
       ownerId: user.id,
       workingCardId: id,
     });
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async find(@Param('id') id: string) {
+    return this.workingCardService.findOne(id);
   }
 }

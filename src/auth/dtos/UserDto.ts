@@ -1,10 +1,10 @@
 export class CreateUserDto {
-    pseudo: string;
-    mail: string;
-    password: string;
+  pseudo: string;
+  mail: string;
+  password: string;
 }
 
 export class LoginUserDto {
-    identifier: string;
-    password: string;
+  identifier: string;
+  password: string;
 }

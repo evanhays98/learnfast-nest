@@ -40,6 +40,7 @@ export class WorkingCardService {
     });
     card.points += 1;
     if (card.points === card.maxPoints || card.points === 1) {
+      card.points = card.maxPoints;
       card.isValidate = true;
       card.history.push(WorkingCardHistoryEnums.FINISH_CARD);
     } else {
@@ -66,6 +67,9 @@ export class WorkingCardService {
         id,
       },
     });
+    if (card.points === 0) {
+      card.points += 1;
+    }
     card.history.push(WorkingCardHistoryEnums.MISS_ANSWER);
     return this.repo.save(card);
   }
@@ -97,7 +101,7 @@ export class WorkingCardService {
       },
     });
 
-    if (answer.answer === workingCard.card.fieldTranslation.translation) {
+    if (answer.answer === workingCard.card.fieldTranslation.answers[0]) {
       return this.addPoint(answer.workingCardId);
     }
     return this.miss(answer.workingCardId);
@@ -105,6 +109,9 @@ export class WorkingCardService {
 
   async getWorkingCard(chapterId: string, meId: string) {
     const cardsToLearn = await this.cardService.getCardsToWork(meId, chapterId);
+    if (!cardsToLearn.length) {
+      return [];
+    }
     const cardIds = cardsToLearn.map((card) => card.id);
     for (const card of cardsToLearn) {
       await this.create({
@@ -112,12 +119,27 @@ export class WorkingCardService {
         cardId: card.id,
       });
     }
+    this.logger.error(cardIds.length);
     return this.repo
       .createQueryBuilder('workingCard')
       .leftJoinAndSelect('workingCard.card', 'card')
       .leftJoinAndSelect('card.fieldTranslation', 'fieldTs')
       .where('workingCard.cardId IN (:...cardIds)', { cardIds })
+      .andWhere('workingCard.ownerId = :meId', { meId })
       .orderBy('RANDOM()')
       .getMany();
+  }
+
+  async findOne(id: string) {
+    return this.repo.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        card: {
+          fieldTranslation: true,
+        },
+      },
+    });
   }
 }

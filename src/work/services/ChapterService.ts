@@ -24,4 +24,16 @@ export class ChapterService {
       },
     });
   }
+
+  async findAll() {
+    return this.repo.find();
+  }
+
+  async findOne(id: string) {
+    return this.repo.findOne({
+      where: {
+        id,
+      },
+    });
+  }
 }
