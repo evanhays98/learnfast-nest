@@ -101,7 +101,10 @@ export class WorkingCardService {
       },
     });
 
-    if (answer.answer === workingCard.card.fieldTranslation.answers[0]) {
+    if (
+      answer.answer.trim().toLowerCase() ===
+      workingCard.card.fieldTranslation.answers[0].trim().toLowerCase()
+    ) {
       return this.addPoint(answer.workingCardId);
     }
     return this.miss(answer.workingCardId);
