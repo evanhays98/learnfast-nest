@@ -10,7 +10,7 @@ import { UserEntity } from './entities/UserEntity';
     TypeOrmModule.forFeature([UserEntity]),
     JwtModule.register({
       global: true,
-      secret: 'bBAoB3EuKvdbVcDLfcAjfSc4KsxpfZMRQeRurKSaoBzySmSd9GKMyvA2gptUnqx',
+      secret: process.env.JWT_AUTH_SECRET,
       signOptions: { expiresIn: '33333660s' },
     }),
   ],
