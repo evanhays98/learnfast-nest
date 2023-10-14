@@ -2,12 +2,11 @@ import { DataSource } from 'typeorm';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: 'ep-snowy-bread-78264015.eu-central-1.aws.neon.tech',
+  host: 'localhost',
   port: 5432,
-  username: 'evanhays98',
-  password: 'Fq17BJVfRtkW',
-  database: 'neondb',
-  ssl: true,
+  username: 'evandata',
+  password: 'evandata',
+  database: 'evandata',
   entities: ['src/**/*Entity.ts'],
   subscribers: [],
   migrations: ['src/migrations/*.ts'],

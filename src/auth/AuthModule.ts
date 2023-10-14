@@ -4,9 +4,11 @@ import * as controllers from './controllers';
 import * as services from './services';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/UserEntity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forFeature([UserEntity]),
     JwtModule.register({
       global: true,
