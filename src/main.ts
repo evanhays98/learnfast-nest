@@ -11,7 +11,8 @@ async function bootstrap() {
   app
     .use(
       session({
-        secret: process.env.SESSION_SECRET,
+        secret:
+          'GLhE8EWF6uvwBYbWkfeHizLwpbxNv5WrJa3NqKeCSCTt2S24jG9wFUpToMJnK6V',
         resave: false,
         saveUninitialized: false,
         rolling: true, // keep session alive
@@ -24,7 +25,7 @@ async function bootstrap() {
     .enableCors();
   app.use(passport.initialize());
   app.use(passport.session());
-  await app.listen(parseInt(process.env.APP_PORT, 10) || 3000);
+  await app.listen(3000);
 }
 
 bootstrap();
