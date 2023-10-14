@@ -17,7 +17,15 @@ import { ConfigModule } from '@nestjs/config';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: ['../src/**/*Entity.ts'],
+      synchronize: false,
       autoLoadEntities: true,
+      ssl: true,
+      extra: {
+        ssl: {
+          rejectUnauthorized: false,
+          sslmode: 'require',
+        },
+      },
     }),
     AuthModule,
     WorkModule,
