@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../libs/entities/BaseEntity';
 import { CardEntity } from './CardEntity';
 import { Exclude, Type } from 'class-transformer';
-import { IsOptional, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 @Entity()
 export class ChapterEntity extends BaseEntity {
@@ -21,6 +21,10 @@ export class ChapterEntity extends BaseEntity {
   @Type(() => CardEntity)
   @IsOptional()
   cards?: CardEntity[];
+
+  @Column({ default: 'fr-FR' })
+  @IsString()
+  lng: string;
 
   //Add image
 }

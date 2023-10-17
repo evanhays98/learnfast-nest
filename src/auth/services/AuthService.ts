@@ -29,7 +29,6 @@ export class AuthService {
     password: string,
   ): Promise<UserEntity> {
     const user = await this.usersService.findByIdentifier(identifier);
-    this.logger.debug(user.salt);
     if (
       user &&
       user.password ===
@@ -83,7 +82,6 @@ export class AuthService {
         return this.loginUser(user);
       })
       .catch((err) => {
-        this.logger.error(err);
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       });
   }

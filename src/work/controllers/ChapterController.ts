@@ -28,8 +28,9 @@ export class ChapterController {
 
   @Get('')
   @UseGuards(JwtAuthGuard)
-  async findAll() {
-    return this.chapterService.findAll();
+  async findAll(@Req() req: Request) {
+    const user = req.user as AuthUser;
+    return this.chapterService.findAll(user.id);
   }
 
   @Get(':id')

@@ -122,7 +122,6 @@ export class WorkingCardService {
         cardId: card.id,
       });
     }
-    this.logger.error(cardIds.length);
     return this.repo
       .createQueryBuilder('workingCard')
       .leftJoinAndSelect('workingCard.card', 'card')

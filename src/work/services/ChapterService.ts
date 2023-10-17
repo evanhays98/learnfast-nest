@@ -25,8 +25,16 @@ export class ChapterService {
     });
   }
 
-  async findAll() {
+  async findAll(userId: string) {
     return this.repo.find();
+    /*return this.repo
+      .createQueryBuilder('chapter')
+      .leftJoinAndSelect('workingCard.card', 'card')
+      .leftJoinAndSelect('card.fieldTranslation', 'fieldTs')
+      .where('workingCard.cardId IN (:...cardIds)', { cardIds })
+      .andWhere('workingCard.ownerId = :meId', { meId })
+      .orderBy('RANDOM()')
+      .getMany();*/
   }
 
   async findOne(id: string) {

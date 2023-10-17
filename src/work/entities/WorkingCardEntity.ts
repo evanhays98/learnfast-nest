@@ -16,6 +16,10 @@ export class WorkingCardEntity extends BaseEntity {
   @JoinColumn({ name: 'cardId' })
   card: CardEntity;
 
+  @Column({ nullable: false })
+  @IsUUID('4', { always: true })
+  chapterId: string;
+
   @Column()
   @IsUUID('4', { always: true })
   cardId: string;
