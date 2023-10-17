@@ -33,6 +33,13 @@ export class ChapterController {
     return this.chapterService.findAll(user.id);
   }
 
+  @Get('last-worked')
+  @UseGuards(JwtAuthGuard)
+  async findLastWorked(@Req() req: Request) {
+    const user = req.user as AuthUser;
+    return this.chapterService.findLastWorked(user.id);
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string) {

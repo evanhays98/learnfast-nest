@@ -4,6 +4,7 @@ import { BaseEntity } from '../../libs/entities/BaseEntity';
 import { WorkingCardHistoryEnums } from '../../libs/enums';
 import { Exclude } from 'class-transformer';
 import { CardEntity } from './CardEntity';
+import {ChapterEntity} from "./ChapterEntity";
 
 @Entity()
 export class WorkingCardEntity extends BaseEntity {
@@ -16,7 +17,12 @@ export class WorkingCardEntity extends BaseEntity {
   @JoinColumn({ name: 'cardId' })
   card: CardEntity;
 
-  @Column({ nullable: false })
+  @ManyToOne(() => ChapterEntity, (chapter) => chapter.workingCards)
+  @Exclude({ toClassOnly: true })
+  @JoinColumn({ name: 'chapterId' })
+  chapter: ChapterEntity;
+
+  @Column({ type: 'uuid' })
   @IsUUID('4', { always: true })
   chapterId: string;
 

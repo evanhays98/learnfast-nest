@@ -6,6 +6,9 @@ export class CreateWorkingCardService {
 
   @IsUUID('4', { always: true })
   cardId: string;
+
+  @IsUUID('4', { always: true })
+  chapterId: string;
 }
 
 export class answerFieldTranslationWorkingCard {
