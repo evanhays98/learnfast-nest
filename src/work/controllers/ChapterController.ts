@@ -28,8 +28,16 @@ export class ChapterController {
 
   @Get('')
   @UseGuards(JwtAuthGuard)
-  async findAll() {
-    return this.chapterService.findAll();
+  async findAll(@Req() req: Request) {
+    const user = req.user as AuthUser;
+    return this.chapterService.findAll(user.id);
+  }
+
+  @Get('last-worked')
+  @UseGuards(JwtAuthGuard)
+  async findLastWorked(@Req() req: Request) {
+    const user = req.user as AuthUser;
+    return this.chapterService.findLastWorked(user.id);
   }
 
   @Get(':id')

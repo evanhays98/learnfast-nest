@@ -38,6 +38,12 @@ export class WorkingCardController {
     });
   }
 
+  @Post(':id/validate')
+  @UseGuards(JwtAuthGuard)
+  async validate(@Param('id') id: string) {
+    return this.workingCardService.validate(id);
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async find(@Param('id') id: string) {
