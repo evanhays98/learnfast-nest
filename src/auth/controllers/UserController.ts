@@ -1,4 +1,12 @@
-import { Controller, Get, Logger, Req, UseGuards } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Logger,
+  Req,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/jwtAuthGuard';
 import { UsersService } from '../services';
 import { Request } from 'express';
@@ -12,7 +20,8 @@ export class UserController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async signIn(@Req() req: Request) {
+  @UseInterceptors(ClassSerializerInterceptor)
+  async me(@Req() req: Request) {
     const user: AuthUser = req.user as AuthUser;
     return this.userService.findOne(user.id);
   }
