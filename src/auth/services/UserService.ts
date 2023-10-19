@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from '../dtos';
 import isEmail from 'validator/lib/isEmail';
 import { UserEntity } from '../entities/UserEntity';
+import { AuthUser } from '../../libs/dtos';
 
 @Injectable()
 export class UsersService {
@@ -57,21 +58,21 @@ export class UsersService {
     });
   }
 
-  async update(id: string, updateUser: UpdateUserDto): Promise<UserEntity> {
+  async update(user: AuthUser, updateUser: UpdateUserDto): Promise<UserEntity> {
     if (
-      updateUser.mail &&
+      updateUser.mail !== user.mail &&
       (await this.repo.findOne({ where: { mail: updateUser.mail } }))
     ) {
       throw new BadRequestException('Mail already exists');
     }
     if (
-      updateUser.pseudo &&
+      updateUser.pseudo !== user.pseudo &&
       (await this.repo.findOne({ where: { pseudo: updateUser.pseudo } }))
     ) {
       throw new BadRequestException('Pseudo already exists');
     }
     return this.repo.save({
-      id,
+      id: user.id,
       ...updateUser,
     });
   }

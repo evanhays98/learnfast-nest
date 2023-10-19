@@ -34,6 +34,6 @@ export class UserController {
   @UseInterceptors(ClassSerializerInterceptor)
   async update(@Req() req: Request, @Body() body: UpdateUserDto) {
     const user: AuthUser = req.user as AuthUser;
-    return this.userService.update(user.id, body);
+    return this.userService.update(user, body);
   }
 }
