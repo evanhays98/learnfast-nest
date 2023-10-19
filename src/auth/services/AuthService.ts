@@ -36,9 +36,7 @@ export class AuthService {
     ) {
       return user;
     }
-    throw new BadRequestException(
-      `Invalid credentials : \n identifier: ${identifier}\n password: ${password}`,
-    );
+    throw new BadRequestException(`Invalid identifier or password`);
   }
 
   async loginUser(user: UserEntity) {
@@ -73,16 +71,14 @@ export class AuthService {
     };
   }
 
-  signup(
+  async signup(
     signUpForm: CreateUserDto,
   ): Promise<{ access_token: string; userInfo: Record<string, any> } | void> {
-    return this.usersService
-      .create(signUpForm)
-      .then((user) => {
-        return this.loginUser(user);
-      })
-      .catch((err) => {
-        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-      });
+    try {
+      const user = await this.usersService.create(signUpForm);
+      return await this.loginUser(user);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
