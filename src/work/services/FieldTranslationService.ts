@@ -17,7 +17,6 @@ export class FieldTranslationService {
   ) {}
 
   async create(info: CreateFieldTranslationService) {
-    // @FIXME : check if string is correct
     const matches = info.sentence.match(/\/\/(.*?)\/\//g);
     const answers = matches.map((match) => {
       return match.match(/\/\/(.*?)\/\//)[1];

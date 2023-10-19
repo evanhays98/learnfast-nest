@@ -8,15 +8,15 @@ export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   pseudo: string;
 
-  @Exclude()
   @Column()
+  @Exclude()
   salt: string;
 
   @Column({ unique: true })
   mail: string;
 
-  @Exclude()
   @Column()
+  @Exclude()
   password: string;
 
   @BeforeInsert()
@@ -26,5 +26,4 @@ export class UserEntity extends BaseEntity {
       .createHmac('sha256', this.salt + this.password)
       .digest('hex');
   }
-
 }

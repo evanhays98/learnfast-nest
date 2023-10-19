@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from '../dtos';
+import { CreateUserDto, UpdateUserDto } from '../dtos';
 import isEmail from 'validator/lib/isEmail';
 import { UserEntity } from '../entities/UserEntity';
+import { AuthUser } from '../../libs/dtos';
 
 @Injectable()
 export class UsersService {
@@ -14,12 +15,18 @@ export class UsersService {
     private readonly repo: Repository<UserEntity>,
   ) {}
 
-  create(createUserDto: CreateUserDto): Promise<UserEntity> {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     if (!isEmail(createUserDto.mail)) {
-      throw new BadRequestException('mail is not an email');
+      throw new BadRequestException('Mail is not an email');
     }
     if (isEmail(createUserDto.pseudo)) {
-      throw new BadRequestException('pseudo cannot be an email');
+      throw new BadRequestException('Pseudo cannot be an email');
+    }
+    if (await this.repo.findOne({ where: { mail: createUserDto.mail } })) {
+      throw new BadRequestException('Mail already exists');
+    }
+    if (await this.repo.findOne({ where: { pseudo: createUserDto.pseudo } })) {
+      throw new BadRequestException('Pseudo already exists');
     }
     const newUser = new UserEntity();
     newUser.mail = createUserDto.mail;
@@ -48,6 +55,25 @@ export class UsersService {
       where: {
         id,
       },
+    });
+  }
+
+  async update(user: AuthUser, updateUser: UpdateUserDto): Promise<UserEntity> {
+    if (
+      updateUser.mail !== user.mail &&
+      (await this.repo.findOne({ where: { mail: updateUser.mail } }))
+    ) {
+      throw new BadRequestException('Mail already exists');
+    }
+    if (
+      updateUser.pseudo !== user.pseudo &&
+      (await this.repo.findOne({ where: { pseudo: updateUser.pseudo } }))
+    ) {
+      throw new BadRequestException('Pseudo already exists');
+    }
+    return this.repo.save({
+      id: user.id,
+      ...updateUser,
     });
   }
 }
