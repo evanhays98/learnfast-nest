@@ -71,9 +71,13 @@ export class UsersService {
     ) {
       throw new BadRequestException('Pseudo already exists');
     }
-    return this.repo.save({
-      id: user.id,
-      ...updateUser,
+    const userBase = await this.repo.findOne({
+      where: {
+        id: user.id,
+      },
     });
+    const updatedUser = new UserEntity();
+    Object.assign(updatedUser, userBase, updateUser);
+    return this.repo.save(updatedUser);
   }
 }

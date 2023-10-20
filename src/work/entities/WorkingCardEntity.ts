@@ -4,7 +4,7 @@ import { BaseEntity } from '../../libs/entities/BaseEntity';
 import { WorkingCardHistoryEnums } from '../../libs/enums';
 import { Exclude } from 'class-transformer';
 import { CardEntity } from './CardEntity';
-import {ChapterEntity} from "./ChapterEntity";
+import { ChapterEntity } from './ChapterEntity';
 
 @Entity()
 export class WorkingCardEntity extends BaseEntity {
@@ -56,7 +56,7 @@ export class WorkingCardEntity extends BaseEntity {
 
   @BeforeUpdate()
   updateDate() {
-    if (this.history.length === 0) {
+    if (this.history.length === 1) {
       this.startedAt = new Date();
     }
   }

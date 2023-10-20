@@ -52,7 +52,7 @@ export class CardService {
 
   async getCardsToWork(meId: string, chapterId: string) {
     const date = new Date();
-    date.setMinutes(date.getMinutes() - 15);
+    date.setMinutes(date.getMinutes() - 4);
     const cardsToRetry = await this.repo
       .createQueryBuilder('card')
       .addSelect('RANDOM()', 'seeded_random')
@@ -67,7 +67,7 @@ export class CardService {
       )
       .where('card.chapterId = :chapterId', { chapterId })
       .orderBy('seeded_random', 'DESC')
-      .take(18)
+      .take(17)
       .getMany();
     const cardsToLearn = await this.repo
       .createQueryBuilder('card')

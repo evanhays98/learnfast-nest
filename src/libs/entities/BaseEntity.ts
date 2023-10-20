@@ -27,7 +27,7 @@ export class BaseEntity {
   }
 
   @BeforeUpdate()
-  updateDate() {
+  updateBaseEntity() {
     this.updatedAt = new Date();
   }
 }
