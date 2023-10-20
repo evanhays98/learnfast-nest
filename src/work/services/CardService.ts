@@ -52,7 +52,7 @@ export class CardService {
 
   async getCardsToWork(meId: string, chapterId: string) {
     const date = new Date();
-    date.setMinutes(date.getMinutes() - 4);
+    date.setMinutes(date.getMinutes() - 10);
     const cardsToRetry = await this.repo
       .createQueryBuilder('card')
       .addSelect('RANDOM()', 'seeded_random')
