@@ -1,4 +1,4 @@
-import { IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateChapterService {
   @IsString()
@@ -9,4 +9,17 @@ export class CreateChapterService {
 
   @IsUUID('4')
   ownerId: string;
+}
+
+export class UpdateChapterService {
+  @IsString()
+  @IsOptional()
+  title?: string;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @IsUUID('4')
+  id: string;
 }

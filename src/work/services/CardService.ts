@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CardEntity } from '../entities';
 import { CreateCardService } from '../../libs/dtos/CardServiceDto';
+import { paginate, PaginateQuery } from 'nestjs-paginate';
 
 @Injectable()
 export class CardService {
@@ -28,17 +29,6 @@ export class CardService {
     });
   }
 
-  async findByFieldId(fieldId: string) {
-    return this.repo.findOne({
-      where: {
-        fieldId,
-      },
-      relations: {
-        fieldTranslation: true,
-      },
-    });
-  }
-
   async findByChapterId(chapterId: string) {
     return this.repo.find({
       where: {
@@ -48,6 +38,24 @@ export class CardService {
         fieldTranslation: true,
       },
     });
+  }
+
+  async findPaginatedByChapterId(chapterId: string, query: PaginateQuery) {
+    const test = await paginate(query, this.repo, {
+      defaultSortBy: undefined,
+      filterableColumns: undefined,
+      relations: {
+        fieldTranslation: true,
+      },
+      searchableColumns: undefined,
+      select: ['*'],
+      sortableColumns: ['id', 'updatedAt'],
+      where: {
+        chapterId,
+      },
+    });
+    this.logger.debug(JSON.stringify(test));
+    return test;
   }
 
   async getCardsToWork(meId: string, chapterId: string) {

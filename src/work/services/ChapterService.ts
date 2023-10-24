@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChapterEntity } from '../entities';
-import { CreateChapterService } from '../../libs/dtos';
+import { CreateChapterService, UpdateChapterService } from '../../libs/dtos';
 
 @Injectable()
 export class ChapterService {
@@ -17,12 +17,25 @@ export class ChapterService {
     return this.repo.save(chapter);
   }
 
-  async findAllByUserId(ownerId: string) {
-    return this.repo.find({
+  async findOne(id: string) {
+    return this.repo.findOne({
       where: {
-        ownerId: ownerId,
+        id,
       },
     });
+  }
+
+  async update({ id, description, title }: UpdateChapterService) {
+    const chapterToUpdate = await this.findOne(id);
+    if (
+      title === chapterToUpdate.title &&
+      description === chapterToUpdate.description
+    ) {
+      return chapterToUpdate;
+    }
+    chapterToUpdate.title = title;
+    chapterToUpdate.description = description;
+    return this.repo.save(chapterToUpdate);
   }
 
   async findAll(ownerId: string) {
@@ -56,13 +69,5 @@ export class ChapterService {
       .groupBy('chapter.id')
       .orderBy('MAX(workingCard.updatedAt)', 'DESC')
       .getOne();
-  }
-
-  async findOne(id: string) {
-    return this.repo.findOne({
-      where: {
-        id,
-      },
-    });
   }
 }
