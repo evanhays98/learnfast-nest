@@ -8,6 +8,7 @@ import {
   CreateWorkingCardService,
 } from '../../libs/dtos';
 import { CardService } from './CardService';
+import { deburr } from 'lodash';
 
 @Injectable()
 export class WorkingCardService {
@@ -102,8 +103,8 @@ export class WorkingCardService {
     });
 
     if (
-      answer.answer.trim().toLowerCase() ===
-      workingCard.card.fieldTranslation.answers[0].trim().toLowerCase()
+      deburr(answer.answer.trim().toLowerCase()) ===
+      deburr(workingCard.card.fieldTranslation.answers[0].trim().toLowerCase())
     ) {
       return this.addPoint(answer.workingCardId);
     }
