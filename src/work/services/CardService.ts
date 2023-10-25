@@ -47,7 +47,12 @@ export class CardService {
       relations: {
         fieldTranslation: true,
       },
-      searchableColumns: undefined,
+      searchableColumns: [
+        'fieldTranslation.sentence',
+        'fieldTranslation.translation',
+        'fieldTranslation.information',
+        'type',
+      ],
       select: ['*'],
       sortableColumns: ['id', 'updatedAt'],
       where: {
