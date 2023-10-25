@@ -54,7 +54,6 @@ export class CardService {
         chapterId,
       },
     });
-    this.logger.debug(JSON.stringify(test));
     return test;
   }
 

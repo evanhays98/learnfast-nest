@@ -28,7 +28,7 @@ export class PermissionGuardChapter implements CanActivate {
       return true;
     }
 
-    const chapterId = request.params.id;
+    const chapterId = request.params.chapterId || request.params.id;
     const chapter = await this.chapterRepository.findOne({
       where: {
         id: chapterId,

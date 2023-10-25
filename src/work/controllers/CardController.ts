@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/guards/jwtAuthGuard';
-import { CardService } from '../services';
-import { Request } from 'express';
-import { AuthUser } from '../../libs/dtos';
+import {Body, Controller, Get, Param, Post, Req, UseGuards} from '@nestjs/common';
+import {JwtAuthGuard} from '../../auth/guards/jwtAuthGuard';
+import {CardService} from '../services';
+import {Request} from 'express';
+import {AuthUser} from '../../libs/dtos';
+import {HasPermission, Permissions} from "../../libs/decorators";
 
 @Controller('cards')
 export class CardController {
