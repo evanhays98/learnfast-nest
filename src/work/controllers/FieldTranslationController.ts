@@ -1,3 +1,4 @@
+/*
 import {Body, Controller, Param, Patch, Post, Req, UseGuards} from '@nestjs/common';
 import {AuthUser, CreateFieldTranslation} from '../../libs/dtos';
 import {FieldTranslationService} from '../services';
@@ -24,3 +25,4 @@ export class FieldTranslationController {
     return this.fieldTranslationService.update({ ...field, id });
   }
 }
+*/

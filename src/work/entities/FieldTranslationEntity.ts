@@ -1,13 +1,11 @@
-import { Column, Entity, OneToOne } from 'typeorm';
-import { BaseEntity } from '../../libs/entities/BaseEntity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { IsOptional, IsString, IsUUID } from 'class-validator';
-import { CardEntity } from './CardEntity';
 
 @Entity()
-export class FieldTranslationEntity extends BaseEntity {
-  @Column()
+export class FieldTranslationEntity {
+  @PrimaryGeneratedColumn('uuid')
   @IsUUID('4', { always: true })
-  ownerId: string;
+  id: string;
 
   @Column()
   sentence: string;
@@ -23,7 +21,4 @@ export class FieldTranslationEntity extends BaseEntity {
   @Column({ nullable: true })
   @IsOptional()
   information?: string;
-
-  @OneToOne(() => CardEntity, (field) => field.id)
-  card: CardEntity;
 }

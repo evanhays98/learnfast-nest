@@ -11,8 +11,8 @@ import { IsEnum, IsOptional, IsUUID } from 'class-validator';
 import { BaseEntity } from '../../libs/entities/BaseEntity';
 import { ChapterEntity } from './ChapterEntity';
 import { Exclude } from 'class-transformer';
-import { FieldTranslationEntity } from './FieldTranslationEntity';
 import { WorkingCardEntity } from './WorkingCardEntity';
+import { FieldTranslationEntity } from './FieldTranslationEntity';
 
 @Entity()
 export class CardEntity extends BaseEntity {
@@ -36,16 +36,20 @@ export class CardEntity extends BaseEntity {
   @IsUUID('4', { always: true })
   chapterId: string;
 
-  @OneToOne(() => FieldTranslationEntity, (field) => field.card)
+  @OneToOne(() => FieldTranslationEntity, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    eager: true,
+  })
+  @JoinColumn()
   @IsOptional()
-  @JoinColumn({ name: 'fieldId' })
   fieldTranslation?: FieldTranslationEntity;
 
-  @Column()
-  @IsUUID('4', { always: true })
-  fieldId: string;
-
-  @OneToMany(() => WorkingCardEntity, (field) => field.card)
+  @OneToMany(() => WorkingCardEntity, (field) => field.card, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @Exclude({ toClassOnly: true })
   workingCards: WorkingCardEntity[];
 }

@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CardEntity } from '../entities';
-import { CreateCardService } from '../../libs/dtos/CardServiceDto';
+import {
+  CreateCardService,
+  UpdateCardService,
+} from '../../libs/dtos/CardServiceDto';
 import { paginate, PaginateQuery } from 'nestjs-paginate';
 
 @Injectable()
@@ -15,6 +18,25 @@ export class CardService {
   ) {}
 
   async create(card: CreateCardService) {
+    const matches = card.fieldTranslation.sentence.match(/\/\/(.*?)\/\//g);
+    card.fieldTranslation.answers = matches.map((match) => {
+      return match.match(/\/\/(.*?)\/\//)[1];
+    });
+    return this.repo.save(card);
+  }
+
+  async update(newCard: UpdateCardService) {
+    const card = await this.repo.findOne({
+      where: {
+        id: newCard.id,
+      },
+    });
+    const matches = card.fieldTranslation.sentence.match(/\/\/(.*?)\/\//g);
+    card.fieldTranslation.answers = matches.map((match) => {
+      return match.match(/\/\/(.*?)\/\//)[1];
+    });
+    card.fieldTranslation = newCard.fieldTranslation;
+    card.type = newCard.type;
     return this.repo.save(card);
   }
 
@@ -23,43 +45,26 @@ export class CardService {
       where: {
         id,
       },
-      relations: {
-        fieldTranslation: true,
-      },
-    });
-  }
-
-  async findByChapterId(chapterId: string) {
-    return this.repo.find({
-      where: {
-        chapterId,
-      },
-      relations: {
-        fieldTranslation: true,
-      },
     });
   }
 
   async findPaginatedByChapterId(chapterId: string, query: PaginateQuery) {
-    const test = await paginate(query, this.repo, {
+    return await paginate(query, this.repo, {
       defaultSortBy: undefined,
       filterableColumns: undefined,
-      relations: {
-        fieldTranslation: true,
-      },
       searchableColumns: [
-        'fieldTranslation.sentence',
         'fieldTranslation.translation',
+        'fieldTranslation.sentence',
         'fieldTranslation.information',
         'type',
       ],
+      relations: ['fieldTranslation'],
       select: ['*'],
-      sortableColumns: ['id', 'updatedAt'],
+      sortableColumns: ['updatedAt', 'createdAt', 'type', 'fieldTranslation'],
       where: {
         chapterId,
       },
     });
-    return test;
   }
 
   async getCardsToWork(meId: string, chapterId: string) {
@@ -87,10 +92,13 @@ export class CardService {
       .leftJoin(
         'card.workingCards',
         'workingCard',
-        'workingCard.ownerId = :meId AND workingCard.isValidate = false AND ARRAY_LENGTH(workingCard.history, 1) IS NULL',
+        'workingCard.ownerId = :meId',
         { meId },
       )
       .where('card.chapterId = :chapterId', { chapterId })
+      .andWhere('workingCard.isValidate = false')
+      .andWhere('ARRAY_LENGTH(workingCard.history, 1) IS NULL')
+      .orWhere('workingCard.history IS NULL')
       .orderBy('seeded_random', 'DESC')
       .distinct(true)
       .take(20)

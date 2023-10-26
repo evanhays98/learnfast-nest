@@ -1,7 +1,8 @@
 import { Controller, Get, Logger, Param } from '@nestjs/common';
 import { CardService } from '../services';
 import { HasPermission, Permissions } from '../../libs/decorators';
-import { Paginate, PaginateQuery } from 'nestjs-paginate';
+import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { CardEntity } from '../entities';
 
 @Controller('chapters/:id/cards')
 export class ChaptersCardsController {
@@ -14,7 +15,7 @@ export class ChaptersCardsController {
   async create(
     @Param('id') chapterId: string,
     @Paginate() query: PaginateQuery,
-  ) {
+  ): Promise<Paginated<CardEntity>> {
     return this.cardService.findPaginatedByChapterId(chapterId, query);
   }
 }

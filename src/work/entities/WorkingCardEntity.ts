@@ -12,7 +12,9 @@ export class WorkingCardEntity extends BaseEntity {
   @IsUUID('4', { always: true })
   ownerId: string;
 
-  @ManyToOne(() => CardEntity, (card) => card.workingCards)
+  @ManyToOne(() => CardEntity, (card) => card.workingCards, {
+    eager: true,
+  })
   @Exclude({ toClassOnly: true })
   @JoinColumn({ name: 'cardId' })
   card: CardEntity;
