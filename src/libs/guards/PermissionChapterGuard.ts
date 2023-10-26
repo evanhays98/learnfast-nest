@@ -24,7 +24,7 @@ export class PermissionGuardChapter implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user as AuthUser;
 
-    if (user.role.includes(Role.ADMIN)) {
+    if (user.role && user.role.includes(Role.ADMIN)) {
       return true;
     }
 
