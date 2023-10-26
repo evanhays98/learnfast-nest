@@ -1,5 +1,6 @@
 import { IsEnum, IsUUID } from 'class-validator';
 import { CardType } from '../enums';
+import { FieldTranslationEntity } from '../../work/entities';
 
 export class CreateCardService {
   @IsUUID('4')
@@ -11,6 +12,14 @@ export class CreateCardService {
   @IsUUID('4')
   chapterId: string;
 
+  fieldTranslation?: FieldTranslationEntity | undefined;
+}
+
+export class UpdateCardService {
   @IsUUID('4')
-  fieldId: string;
+  id: string;
+  @IsEnum(CardType, { always: true })
+  type?: CardType;
+
+  fieldTranslation?: FieldTranslationEntity;
 }

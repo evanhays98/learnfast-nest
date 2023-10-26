@@ -1,5 +1,11 @@
 import { IsOptional } from 'class-validator';
 
+export enum Role {
+  ANONYMOUS = 'ANONYMOUS',
+  BETA = 'BETA',
+  ADMIN = 'ADMIN',
+}
+
 export class CreateUserDto {
   pseudo: string;
   mail: string;

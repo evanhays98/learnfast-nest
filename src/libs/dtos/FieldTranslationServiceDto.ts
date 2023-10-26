@@ -18,3 +18,22 @@ export class CreateFieldTranslationService {
   @IsString({ always: true })
   information?: string;
 }
+
+export class UpdateFieldTranslationService {
+  @IsUUID('4', { always: true })
+  chapterId: string;
+
+  @IsUUID('4', { always: true })
+  @IsString({ always: true })
+  sentence: string;
+
+  @IsUUID('4', { always: true })
+  id: string;
+
+  @IsString({ always: true })
+  translation: string;
+
+  @IsOptional()
+  @IsString({ always: true })
+  information?: string;
+}

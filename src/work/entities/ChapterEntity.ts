@@ -17,13 +17,19 @@ export class ChapterEntity extends BaseEntity {
   @Column()
   description: string;
 
-  @OneToMany(() => CardEntity, (card) => card.chapter)
+  @OneToMany(() => CardEntity, (card) => card.chapter, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @Exclude({ toClassOnly: true })
   @Type(() => CardEntity)
   @IsOptional()
   cards?: CardEntity[];
 
-  @OneToMany(() => WorkingCardEntity, (workingCard) => workingCard.chapter)
+  @OneToMany(() => WorkingCardEntity, (workingCard) => workingCard.chapter, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @Exclude({ toClassOnly: true })
   @Type(() => WorkingCardEntity)
   @IsOptional()

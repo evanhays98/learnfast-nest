@@ -95,16 +95,12 @@ export class WorkingCardService {
       where: {
         id: answer.workingCardId,
       },
-      relations: {
-        card: {
-          fieldTranslation: true,
-        },
-      },
     });
+    const answers = workingCard.card.fieldTranslation.answers;
 
     if (
       deburr(answer.answer.trim().toLowerCase()) ===
-      deburr(workingCard.card.fieldTranslation.answers[0].trim().toLowerCase())
+      deburr(answers[0].trim().toLowerCase())
     ) {
       return this.addPoint(answer.workingCardId);
     }
@@ -138,11 +134,6 @@ export class WorkingCardService {
     return this.repo.findOne({
       where: {
         id,
-      },
-      relations: {
-        card: {
-          fieldTranslation: true,
-        },
       },
     });
   }

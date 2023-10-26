@@ -3,14 +3,16 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthUser, CreateChapter } from '../../libs/dtos';
+import { AuthUser, CreateChapter, UpdateChapter } from '../../libs/dtos';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../../auth/guards/jwtAuthGuard';
 import { CardService, ChapterService } from '../services';
+import { HasPermission, Permissions } from '../../libs/decorators';
 
 @Controller('chapters')
 export class ChapterController {
@@ -24,6 +26,12 @@ export class ChapterController {
   async create(@Body() chapter: CreateChapter, @Req() req: Request) {
     const user = req.user as AuthUser;
     return this.chapterService.create({ ...chapter, ownerId: user.id });
+  }
+
+  @Patch(':id')
+  @HasPermission(Permissions.CHAPTER_OWNER)
+  async update(@Body() chapter: UpdateChapter, @Param('id') id: string) {
+    return this.chapterService.update({ ...chapter, id });
   }
 
   @Get('')
@@ -44,11 +52,5 @@ export class ChapterController {
   @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string) {
     return this.chapterService.findOne(id);
-  }
-
-  @Get(':id/cards')
-  @UseGuards(JwtAuthGuard)
-  async getCards(@Param('id') id: string) {
-    return this.cardService.findByChapterId(id);
   }
 }
