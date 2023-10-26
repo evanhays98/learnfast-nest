@@ -11,4 +11,7 @@ export class UpdateChapter {
 
   @IsOptional()
   description?: string;
+
+  @IsOptional()
+  lng?: string;
 }

@@ -20,6 +20,10 @@ export class UpdateChapterService {
   @IsOptional()
   description?: string;
 
+  @IsString()
+  @IsOptional()
+  lng?: string;
+
   @IsUUID('4')
   id: string;
 }

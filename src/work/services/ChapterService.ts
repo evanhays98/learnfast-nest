@@ -25,7 +25,7 @@ export class ChapterService {
     });
   }
 
-  async update({ id, description, title }: UpdateChapterService) {
+  async update({ id, description, title, lng }: UpdateChapterService) {
     const chapterToUpdate = await this.findOne(id);
     if (
       title === chapterToUpdate.title &&
@@ -33,6 +33,7 @@ export class ChapterService {
     ) {
       return chapterToUpdate;
     }
+    chapterToUpdate.lng = lng;
     chapterToUpdate.title = title;
     chapterToUpdate.description = description;
     return this.repo.save(chapterToUpdate);

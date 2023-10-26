@@ -95,10 +95,11 @@ export class CardService {
         'workingCard.ownerId = :meId',
         { meId },
       )
-      .where('card.chapterId = :chapterId', { chapterId })
-      .andWhere('workingCard.isValidate = false')
-      .andWhere('ARRAY_LENGTH(workingCard.history, 1) IS NULL')
-      .orWhere('workingCard.history IS NULL')
+      .where(
+        'card.chapterId = :chapterId AND workingCard.isValidate = false AND ARRAY_LENGTH(workingCard.history, 1) IS NULL',
+        { chapterId },
+      )
+      .orWhere('card.chapterId = :chapterId AND workingCard.id IS NULL')
       .orderBy('seeded_random', 'DESC')
       .distinct(true)
       .take(20)
