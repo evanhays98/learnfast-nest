@@ -25,6 +25,20 @@ export class CardService {
     return this.repo.save(card);
   }
 
+  async delete(id: string) {
+    return this.repo.delete({
+      id,
+    });
+  }
+
+  async countByChapterId(chapterId: string) {
+    return this.repo.count({
+      where: {
+        chapterId,
+      },
+    });
+  }
+
   async update(newCard: UpdateCardService) {
     const card = await this.repo.findOne({
       where: {

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -35,7 +36,7 @@ export class CardController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @HasPermission(Permissions.CARD_OWNER)
   async update(@Param('id') id: string, @Body() { type, field }: UpdateCard) {
     return this.cardService.update({
       id,
@@ -58,5 +59,11 @@ export class CardController {
   @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string) {
     return this.cardService.findOne(id);
+  }
+
+  @Delete(':id')
+  @HasPermission(Permissions.CARD_OWNER)
+  async delete(@Param('id') id: string) {
+    return this.cardService.delete(id);
   }
 }

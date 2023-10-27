@@ -137,4 +137,12 @@ export class WorkingCardService {
       },
     });
   }
+
+  async WorkingCardCountByChapter(id: string) {
+    return this.repo.count({
+      where: {
+        chapterId: id,
+      },
+    });
+  }
 }

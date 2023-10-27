@@ -1,18 +1,9 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import { AuthUser, CreateChapter, UpdateChapter } from '../../libs/dtos';
-import { Request } from 'express';
-import { JwtAuthGuard } from '../../auth/guards/jwtAuthGuard';
-import { CardService, ChapterService } from '../services';
-import { HasPermission, Permissions } from '../../libs/decorators';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards,} from '@nestjs/common';
+import {AuthUser, CreateChapter, UpdateChapter} from '../../libs/dtos';
+import {Request} from 'express';
+import {JwtAuthGuard} from '../../auth/guards/jwtAuthGuard';
+import {CardService, ChapterService} from '../services';
+import {HasPermission, Permissions} from '../../libs/decorators';
 
 @Controller('chapters')
 export class ChapterController {
@@ -52,5 +43,11 @@ export class ChapterController {
   @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string) {
     return this.chapterService.findOne(id);
+  }
+
+  @Delete(':id')
+  @HasPermission(Permissions.CHAPTER_OWNER)
+  async delete(@Param('id') id: string) {
+    return this.chapterService.delete(id)
   }
 }

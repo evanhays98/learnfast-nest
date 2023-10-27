@@ -27,7 +27,10 @@ export class CardEntity extends BaseEntity {
   @IsEnum(CardType, { always: true })
   type: CardType;
 
-  @ManyToOne(() => ChapterEntity, (chapter) => chapter.cards)
+  @ManyToOne(() => ChapterEntity, (chapter) => chapter.cards, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   @Exclude({ toClassOnly: true })
   @JoinColumn({ name: 'chapterId' })
   chapter: ChapterEntity;
@@ -46,10 +49,7 @@ export class CardEntity extends BaseEntity {
   @IsOptional()
   fieldTranslation?: FieldTranslationEntity;
 
-  @OneToMany(() => WorkingCardEntity, (field) => field.card, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => WorkingCardEntity, (field) => field.card)
   @Exclude({ toClassOnly: true })
   workingCards: WorkingCardEntity[];
 }
