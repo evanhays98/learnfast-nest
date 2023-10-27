@@ -25,6 +25,12 @@ export class ChapterService {
     });
   }
 
+  async delete(id: string) {
+    return this.repo.delete({
+      id
+    })
+  }
+
   async update({ id, description, title, lng }: UpdateChapterService) {
     const chapterToUpdate = await this.findOne(id);
     if (

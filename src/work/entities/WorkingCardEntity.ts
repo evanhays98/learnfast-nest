@@ -13,13 +13,18 @@ export class WorkingCardEntity extends BaseEntity {
   ownerId: string;
 
   @ManyToOne(() => CardEntity, (card) => card.workingCards, {
+    cascade: true,
+    onDelete: "CASCADE",
     eager: true,
   })
   @Exclude({ toClassOnly: true })
   @JoinColumn({ name: 'cardId' })
   card: CardEntity;
 
-  @ManyToOne(() => ChapterEntity, (chapter) => chapter.workingCards)
+  @ManyToOne(() => ChapterEntity, (chapter) => chapter.workingCards, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   @Exclude({ toClassOnly: true })
   @JoinColumn({ name: 'chapterId' })
   chapter: ChapterEntity;
