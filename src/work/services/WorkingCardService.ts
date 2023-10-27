@@ -138,11 +138,22 @@ export class WorkingCardService {
     });
   }
 
-  async WorkingCardCountByChapter(id: string) {
-    return this.repo.count({
-      where: {
-        chapterId: id,
-      },
-    });
+  async workingCardCountByChapter(chapterId: string, ownerId: string) {
+    const result = await this.repo
+      .createQueryBuilder('card')
+      .select([
+        'COUNT(*) as total',
+        'SUM(CASE WHEN card.ownerId = :ownerId AND card.isValidate = true THEN 1 ELSE 0 END) as learn',
+        'SUM(CASE WHEN card.ownerId = :ownerId AND ARRAY_LENGTH(card.history, 1) IS NOT NULL AND card.isValidate = false THEN 1 ELSE 0 END) as started',
+      ])
+      .where('card.chapterId = :chapterId', { chapterId })
+      .setParameters({ ownerId })
+      .getRawOne();
+
+    return {
+      total: parseInt(result.total) || 0,
+      learn: parseInt(result.learn) || 0,
+      started: parseInt(result.started) || 0,
+    };
   }
 }
