@@ -27,15 +27,16 @@ export class ChapterService {
 
   async delete(id: string) {
     return this.repo.delete({
-      id
-    })
+      id,
+    });
   }
 
   async update({ id, description, title, lng }: UpdateChapterService) {
     const chapterToUpdate = await this.findOne(id);
     if (
       title === chapterToUpdate.title &&
-      description === chapterToUpdate.description
+      description === chapterToUpdate.description &&
+      lng === chapterToUpdate.lng
     ) {
       return chapterToUpdate;
     }
