@@ -9,8 +9,10 @@ import {
 } from '@nestjs/common';
 import { WorkingCardService } from '../services';
 import { JwtAuthGuard } from '../../auth/guards/jwtAuthGuard';
-import { AnswerWorkingCard, AuthUser } from '../../libs/dtos';
+import { AnswerWorkingCard, AuthUser, LastUsageUser } from '../../libs/dtos';
 import { Request } from 'express';
+import { HasPermission, Permissions } from '../../libs/decorators';
+import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 @Controller('working-cards')
 export class WorkingCardController {
@@ -42,6 +44,14 @@ export class WorkingCardController {
   @UseGuards(JwtAuthGuard)
   async validate(@Param('id') id: string) {
     return this.workingCardService.validate(id);
+  }
+
+  @Get('last-usage-user')
+  @HasPermission(Permissions.IS_ADMIN)
+  async create(
+    @Paginate() query: PaginateQuery,
+  ): Promise<Paginated<LastUsageUser>> {
+    return this.workingCardService.getLastUsageForUser(query);
   }
 
   @Get(':id')

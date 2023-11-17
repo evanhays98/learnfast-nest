@@ -9,3 +9,8 @@ export class AnswerWorkingCard {
   @IsString({ always: true })
   answer: string;
 }
+
+export interface LastUsageUser {
+  pseudo: string;
+  lastUsage: Date;
+}

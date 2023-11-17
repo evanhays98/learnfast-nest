@@ -6,9 +6,12 @@ import { WorkingCardHistoryEnums } from '../../libs/enums';
 import {
   answerFieldTranslationWorkingCard,
   CreateWorkingCardService,
+  LastUsageUser,
 } from '../../libs/dtos';
 import { CardService } from './CardService';
 import { deburr } from 'lodash';
+import { Paginated, PaginateQuery } from 'nestjs-paginate';
+import { UserEntity } from '../../auth/entities/UserEntity';
 
 @Injectable()
 export class WorkingCardService {
@@ -154,6 +157,46 @@ export class WorkingCardService {
       total: parseInt(result.total) || 0,
       learn: parseInt(result.learn) || 0,
       started: parseInt(result.started) || 0,
+    };
+  }
+
+  async getLastUsageForUser(
+    query: PaginateQuery,
+  ): Promise<Paginated<LastUsageUser>> {
+    query.limit = query.limit || 10;
+    query.page = query.page || 1;
+    query.search = query.search || '';
+    const lastUsageUser: LastUsageUser[] = await this.repo
+      .createQueryBuilder('wc')
+      .leftJoin(UserEntity, 'user', 'user.id = wc."ownerId"::uuid')
+      .select(['user.pseudo as pseudo, MAX(wc.updatedAt) as "lastUsage"'])
+      .where('user.pseudo LIKE :search', { search: `%${query.search}%` })
+      .groupBy('user.pseudo')
+      .orderBy('MAX(wc.updatedAt)', 'DESC')
+      .offset(query.limit * (query.page - 1))
+      .limit(query.limit)
+      .getRawMany();
+
+    return {
+      data: lastUsageUser,
+      meta: {
+        itemsPerPage: query.limit,
+        totalItems: lastUsageUser.length,
+        currentPage: query.page,
+        totalPages: Math.ceil(lastUsageUser.length / query.limit),
+        sortBy: undefined,
+        searchBy: undefined,
+        search: query.search,
+        select: undefined,
+        filter: undefined,
+      },
+      links: {
+        first: undefined,
+        previous: undefined,
+        current: undefined,
+        next: undefined,
+        last: undefined,
+      },
     };
   }
 }
