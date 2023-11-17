@@ -163,39 +163,57 @@ export class WorkingCardService {
   async getLastUsageForUser(
     query: PaginateQuery,
   ): Promise<Paginated<LastUsageUser>> {
-    query.limit = query.limit || 10;
-    query.page = query.page || 1;
-    query.search = query.search || '';
+    const path = query.path;
+    const limit = query.limit || 20;
+    const page = query.page || 1;
+    const search = query.search || '';
+
+    const test = await this.repo
+      .createQueryBuilder('wc')
+      .leftJoin(UserEntity, 'user', 'user.id = wc."ownerId"::uuid')
+      .select(['user.pseudo as pseudo', 'MAX(wc.updatedAt) as "lastUsage"'])
+      .where('user.pseudo LIKE :search', { search: `%${search}%` })
+      .groupBy('user.pseudo')
+      .orderBy('MAX(wc.updatedAt)', 'DESC')
+      .getRawMany();
+    const totalItems = test.length;
+
     const lastUsageUser: LastUsageUser[] = await this.repo
       .createQueryBuilder('wc')
       .leftJoin(UserEntity, 'user', 'user.id = wc."ownerId"::uuid')
       .select(['user.pseudo as pseudo, MAX(wc.updatedAt) as "lastUsage"'])
-      .where('user.pseudo LIKE :search', { search: `%${query.search}%` })
+      .where('user.pseudo LIKE :search', { search: `%${search}%` })
       .groupBy('user.pseudo')
       .orderBy('MAX(wc.updatedAt)', 'DESC')
-      .offset(query.limit * (query.page - 1))
-      .limit(query.limit)
+      .offset(limit * (page - 1))
+      .limit(limit)
       .getRawMany();
+
+    const options = `&limit=${limit}&search=${search}`;
+    const buildLink = (p: number) => path + '?page=' + p + options;
+
+    const totalPages = Math.ceil(totalItems / limit);
 
     return {
       data: lastUsageUser,
       meta: {
-        itemsPerPage: query.limit,
-        totalItems: lastUsageUser.length,
-        currentPage: query.page,
-        totalPages: Math.ceil(lastUsageUser.length / query.limit),
+        itemsPerPage: limit,
+        totalItems,
+        currentPage: page,
+        totalPages,
         sortBy: undefined,
         searchBy: undefined,
-        search: query.search,
+        search,
         select: undefined,
         filter: undefined,
       },
       links: {
-        first: undefined,
-        previous: undefined,
-        current: undefined,
-        next: undefined,
-        last: undefined,
+        first: page == 1 ? undefined : buildLink(1),
+        previous: page - 1 < 1 ? undefined : buildLink(page - 1),
+        current: buildLink(page),
+        next: page + 1 > totalPages ? undefined : buildLink(page + 1),
+        last:
+          page == totalPages || !totalItems ? undefined : buildLink(totalPages),
       },
     };
   }
